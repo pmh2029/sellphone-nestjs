@@ -1,0 +1,10 @@
+version: '3.9'
+services:
+  postgredb:
+    image: postgres:15
+    ports:
+      - 5434:5432
+    environment:
+      POSTGRES_USER: sellphone
+      POSTGRES_DB: sellphone
+      POSTGRES_PASSWORD: sellphone
