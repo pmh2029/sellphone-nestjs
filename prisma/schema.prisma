@@ -26,10 +26,12 @@ model brands {
 
 model products {
   id           Int     @id @default(autoincrement())
-  product_name String  @unique
+  product_name String
   description  String?
   price        Float
   in_stock     Int
-  brand        brands  @relation(fields: [brand_id], references: [id])
+  brand        brands  @relation(fields: [brand_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   brand_id     Int
+
+  @@unique([brand_id, product_name])
 }

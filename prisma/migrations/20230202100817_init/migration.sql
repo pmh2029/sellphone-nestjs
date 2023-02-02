@@ -39,7 +39,7 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 CREATE UNIQUE INDEX "brands_brand_name_key" ON "brands"("brand_name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "products_product_name_key" ON "products"("product_name");
+CREATE UNIQUE INDEX "products_brand_id_product_name_key" ON "products"("brand_id", "product_name");
 
 -- AddForeignKey
-ALTER TABLE "products" ADD CONSTRAINT "products_brand_id_fkey" FOREIGN KEY ("brand_id") REFERENCES "brands"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "products" ADD CONSTRAINT "products_brand_id_fkey" FOREIGN KEY ("brand_id") REFERENCES "brands"("id") ON DELETE CASCADE ON UPDATE CASCADE;
