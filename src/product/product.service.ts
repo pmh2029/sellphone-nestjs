@@ -37,6 +37,7 @@ export class ProductService {
         price: createProductDto.price,
         in_stock: createProductDto.in_stock,
         brand_id: existBrand.id,
+        url: createProductDto.url,
       },
       select: {
         id: true,
@@ -58,6 +59,7 @@ export class ProductService {
         price: true,
         in_stock: true,
         description: true,
+        url: true,
       },
     });
 
@@ -76,6 +78,7 @@ export class ProductService {
         price: true,
         in_stock: true,
         description: true,
+        url: true,
       },
       skip: (page - 1) * perPage,
       take: perPage,
@@ -98,6 +101,7 @@ export class ProductService {
         price: true,
         in_stock: true,
         description: true,
+        url: true,
       },
     });
     if (!product) {
@@ -121,6 +125,7 @@ export class ProductService {
         description: productUpdateDto.description,
         in_stock: productUpdateDto.in_stock,
         price: productUpdateDto.price,
+        url: productUpdateDto.url,
       },
       select: {
         id: true,
@@ -129,6 +134,7 @@ export class ProductService {
         price: true,
         in_stock: true,
         description: true,
+        url: true,
       },
     });
   }

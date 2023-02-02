@@ -16,6 +16,10 @@ export class UpdateProductDto {
   @IsOptional()
   @IsNumber()
   in_stock: number;
+
+  @IsOptional()
+  @IsNotEmpty()
+  url: string;
 }
 
 export class CreateProductDto {
@@ -38,4 +42,8 @@ export class CreateProductDto {
   @IsNotEmpty()
   @IsString()
   brand_name: string;
+
+  @IsNotEmpty()
+  @IsString()
+  url: string;
 }
