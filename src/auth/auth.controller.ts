@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, Post, HttpStatus } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  Post,
+  HttpStatus,
+  Redirect,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../user/user.dto';
 import { SignInDto } from './auth.dto';
@@ -14,14 +21,14 @@ export class AuthController {
   }
 
   @Post('/signin')
+  @Redirect('localhost:3000', 302)
   @HttpCode(HttpStatus.OK)
   async signIn(@Body() signInDto: SignInDto) {
-    return await this.authService.signIn(signInDto);
-  }
+    const res = await this.authService.signIn(signInDto);
+    if (res.user_info.is_admin) {
+      return { url: 'localhost:3000/admin/product' };
+    }
 
-  @Post('/admin/signin')
-  @HttpCode(HttpStatus.OK)
-  async adminSignIn(@Body() signInDto: SignInDto) {
-    return await this.authService.adminSignIn(signInDto);
+    return { url: 'localhost:3000' };
   }
 }
