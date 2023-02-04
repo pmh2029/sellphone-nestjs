@@ -46,6 +46,33 @@ export class AuthService {
     return this.generateJwt(user);
   }
 
+  async adminSignIn(signInDto: SignInDto) {
+    const user = await this.userService.findUserByEmail(signInDto.email);
+    if (!user) {
+      throw new HttpException(
+        { message: 'User not found' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (!user.is_admin) {
+      throw new HttpException(
+        { message: 'User is not admin' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const comparePassword = await compare(signInDto.password, user.password);
+    if (!comparePassword) {
+      throw new HttpException(
+        { message: 'Password is incorrect' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return this.generateJwt(user);
+  }
+
   generateJwt(user: users) {
     const payload = { username: user.username, sub: user.id };
     return {

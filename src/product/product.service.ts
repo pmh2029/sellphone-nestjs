@@ -118,25 +118,29 @@ export class ProductService {
     productId: number,
     productUpdateDto: UpdateProductDto,
   ) {
-    return await this.prisma.products.update({
-      where: { id: productId },
-      data: {
-        product_name: productUpdateDto.product_name,
-        description: productUpdateDto.description,
-        in_stock: productUpdateDto.in_stock,
-        price: productUpdateDto.price,
-        url: productUpdateDto.url,
-      },
-      select: {
-        id: true,
-        product_name: true,
-        brand: true,
-        price: true,
-        in_stock: true,
-        description: true,
-        url: true,
-      },
-    });
+    return await this.prisma.products
+      .update({
+        where: { id: productId },
+        data: {
+          product_name: productUpdateDto.product_name,
+          description: productUpdateDto.description,
+          in_stock: productUpdateDto.in_stock,
+          price: productUpdateDto.price,
+          url: productUpdateDto.url,
+        },
+        select: {
+          id: true,
+          product_name: true,
+          brand: true,
+          price: true,
+          in_stock: true,
+          description: true,
+          url: true,
+        },
+      })
+      .catch((err) => {
+        throw new HttpException({ message: err }, HttpStatus.BAD_REQUEST);
+      });
   }
 
   async deleteProductById(productId: number) {
