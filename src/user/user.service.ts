@@ -32,4 +32,8 @@ export class UserService {
 
     return await this.prisma.users.create({ data: { ...createUserDto } });
   }
+
+  async getAllUsers() {
+    return await this.prisma.users.findMany({where: {is_admin: false}})
+  }
 }

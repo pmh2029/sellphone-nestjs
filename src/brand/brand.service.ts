@@ -48,7 +48,7 @@ export class BrandService {
   }
 
   async deleteBrandById(brandId: number) {
-    await this.prisma.products
+    await this.prisma.brands
       .delete({
         where: { id: brandId },
       })
