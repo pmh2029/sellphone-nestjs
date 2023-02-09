@@ -21,24 +21,35 @@ export class ProductController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async createProduct(@Body() createProductDto: CreateProductDto) {
     return await this.productService.createProduct(createProductDto);
   }
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async getAllProducts() {
     return this.productService.getAllProducts();
   }
 
   @Get('/page')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async getAllProductsWithPagination(
     @Query('page') page: string,
     @Query('per_page') perPage: string,
   ) {
+    if (page === '' && perPage === '') {
+      return this.productService.getAllProductsWithPagination(1, 15);
+    }
+
+    if (page === '' && perPage !== '') {
+      return this.productService.getAllProductsWithPagination(
+        1,
+        parseInt(perPage),
+      );
+    }
+
     return this.productService.getAllProductsWithPagination(
       parseInt(page),
       parseInt(perPage),
@@ -47,14 +58,14 @@ export class ProductController {
 
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async getProductById(@Param('id') id: string) {
     return this.productService.getProductById(parseInt(id));
   }
 
   @Patch('/:id')
   @HttpCode(HttpStatus.OK)
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async updateProductById(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
@@ -67,7 +78,7 @@ export class ProductController {
 
   @Delete('/:id')
   @HttpCode(HttpStatus.OK)
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async deleteProductById(@Param('id') id: string) {
     return await this.productService.deleteProductById(parseInt(id));
   }
