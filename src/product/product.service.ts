@@ -70,6 +70,7 @@ export class ProductService {
   }
 
   async getAllProductsWithPagination(page: number, perPage: number) {
+    const total = await this.prisma.products.count();
     const products = await this.prisma.products.findMany({
       select: {
         id: true,
@@ -85,6 +86,7 @@ export class ProductService {
     });
 
     return {
+      total: total,
       products: products,
     };
   }
