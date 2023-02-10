@@ -14,7 +14,6 @@ import { ProductService } from './product.service';
 import { JwtAuthGuard } from '../auth/guard/jwt.guard';
 import { UpdateProductDto, CreateProductDto } from './product.dto';
 import { HttpStatus } from '@nestjs/common';
-import { retry } from 'rxjs';
 
 @Controller('product')
 export class ProductController {
@@ -22,28 +21,28 @@ export class ProductController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  // @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   async createProduct(@Body() createProductDto: CreateProductDto) {
     return await this.productService.createProduct(createProductDto);
   }
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  // @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   async getAllProducts() {
     return this.productService.getAllProducts();
   }
 
   @Get('/{id}')
   @HttpCode(HttpStatus.OK)
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async getProductById(@Param('id') id: string) {
     return this.productService.getProductById(parseInt(id));
   }
 
   @Patch('/{id}')
   @HttpCode(HttpStatus.OK)
-  // @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   async updateProductById(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
@@ -56,7 +55,7 @@ export class ProductController {
 
   @Delete('/{id}')
   @HttpCode(HttpStatus.OK)
-  // @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   async deleteProductById(@Param('id') id: string) {
     return await this.productService.deleteProductById(parseInt(id));
   }

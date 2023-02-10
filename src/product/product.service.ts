@@ -73,41 +73,6 @@ export class ProductService {
     };
   }
 
-  async getAllProductsWithKeyword(page: number, perPage: number, keyword: string) {
-    const total = await this.prisma.products.count({
-      where: {
-        product_name: {
-          contains: keyword ? keyword : "",
-          mode: "insensitive"
-        }
-      }
-    });
-
-    const products = await this.prisma.products.findMany({
-      select: {
-        id: true,
-        product_name: true,
-        brand: true,
-        price: true,
-        in_stock: true,
-        description: true,
-        url: true,
-      },
-      where: {
-        product_name: {
-          contains: keyword ? keyword : "",
-          mode: "insensitive"
-        }
-      },
-      skip: (page - 1) * perPage,
-      take: perPage,
-    });
-
-    return {
-      total: total,
-      products: products,
-    }
-  }
 
   async getAllProductsWithFilterAndPagination(page: number, perPage: number, low: number, high: number, brandName: string) {
     if (brandName !== undefined) {
@@ -186,6 +151,41 @@ export class ProductService {
 
     return {
       total: total,
+      products: products,
+    };
+  }
+
+  async getAllProductsWithKeyword(page: number, perPage: number, keyword: string) {
+    const total = await this.prisma.products.count({
+      where: {
+        product_name: {
+          contains: keyword ? keyword : "",
+          mode: "insensitive"
+        }
+      }
+    });
+
+    const products = await this.prisma.products.findMany({
+      select: {
+        id: true,
+        product_name: true,
+        brand: true,
+        price: true,
+        in_stock: true,
+        description: true,
+        url: true,
+      },
+      where: {
+        product_name: {
+          contains: keyword ? keyword : "",
+          mode: "insensitive"
+        }
+      },
+      skip: (page - 1) * perPage,
+      take: perPage,
+    });
+
+    return {
       products: products,
     };
 
