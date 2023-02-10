@@ -25,6 +25,7 @@ CREATE TABLE "products" (
     "price" DOUBLE PRECISION NOT NULL,
     "in_stock" INTEGER NOT NULL,
     "brand_id" INTEGER NOT NULL,
+    "url" TEXT NOT NULL,
 
     CONSTRAINT "products_pkey" PRIMARY KEY ("id")
 );

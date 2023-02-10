@@ -1,10 +1,11 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { brands, products } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateProductDto, CreateProductDto } from './product.dto';
 
 @Injectable()
 export class ProductService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async createProduct(createProductDto: CreateProductDto) {
     const existBrand = await this.prisma.brands.findUnique({
@@ -61,6 +62,9 @@ export class ProductService {
         description: true,
         url: true,
       },
+      orderBy: {
+        id: 'asc',
+      },
     });
 
     return {
@@ -69,7 +73,16 @@ export class ProductService {
     };
   }
 
-  async getAllProductsWithPagination(page: number, perPage: number) {
+  async getAllProductsWithKeyword(page: number, perPage: number, keyword: string) {
+    const total = await this.prisma.products.count({
+      where: {
+        product_name: {
+          contains: keyword ? keyword : "",
+          mode: "insensitive"
+        }
+      }
+    });
+
     const products = await this.prisma.products.findMany({
       select: {
         id: true,
@@ -80,14 +93,104 @@ export class ProductService {
         description: true,
         url: true,
       },
+      where: {
+        product_name: {
+          contains: keyword ? keyword : "",
+          mode: "insensitive"
+        }
+      },
       skip: (page - 1) * perPage,
       take: perPage,
     });
 
     return {
+      total: total,
+      products: products,
+    }
+  }
+
+  async getAllProductsWithFilterAndPagination(page: number, perPage: number, low: number, high: number, brandName: string) {
+    if (brandName !== undefined) {
+      const brand = await this.prisma.brands.findFirst({
+        where: {
+          brand_name: brandName
+        }
+      })
+
+      const total = await this.prisma.products.count({
+        where: {
+          price: {
+            gte: low ? low * 1000000 : 0,
+            lte: high ? high * 1000000 : 1000000000 * 1000000000,
+          },
+          brand_id: brand.id,
+        },
+      })
+
+      const products = await this.prisma.products.findMany({
+        select: {
+          id: true,
+          product_name: true,
+          brand: true,
+          brand_id: true,
+          price: true,
+          in_stock: true,
+          description: true,
+          url: true,
+        },
+        where: {
+          price: {
+            gte: low ? low * 1000000 : 0,
+            lte: high ? high * 1000000 : 1000000000 * 1000000000,
+          },
+          brand_id: brand.id,
+        },
+        skip: (page - 1) * perPage,
+        take: perPage
+      });
+
+      return {
+        total: total,
+        products: products,
+      };
+    }
+    const products = await this.prisma.products.findMany({
+      select: {
+        id: true,
+        product_name: true,
+        brand: true,
+        brand_id: true,
+        price: true,
+        in_stock: true,
+        description: true,
+        url: true,
+      },
+      where: {
+        price: {
+          gte: low ? low * 1000000 : 0,
+          lte: high ? high * 1000000 : 1000000000 * 1000000000,
+        },
+      },
+      skip: (page - 1) * perPage,
+      take: perPage
+    });
+
+    const total = await this.prisma.products.count({
+      where: {
+        price: {
+          gte: low ? low * 1000000 : 0,
+          lte: high ? high * 1000000 : 1000000000 * 1000000000,
+        },
+      },
+    })
+
+    return {
+      total: total,
       products: products,
     };
+
   }
+
 
   async getProductById(productId: number) {
     const product = await this.prisma.products.findUnique({

@@ -7,7 +7,11 @@ export class BrandService {
   constructor(private prisma: PrismaService) {}
 
   async getAllBrands() {
-    return await this.prisma.brands.findMany();
+    return await this.prisma.brands.findMany({
+      orderBy: {
+        id: "asc",
+      }
+    });
   }
 
   async getBrandByConditions(conditions: any) {

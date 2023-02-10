@@ -14,10 +14,11 @@ import { ProductService } from './product.service';
 import { JwtAuthGuard } from '../auth/guard/jwt.guard';
 import { UpdateProductDto, CreateProductDto } from './product.dto';
 import { HttpStatus } from '@nestjs/common';
+import { retry } from 'rxjs';
 
 @Controller('product')
 export class ProductController {
-  constructor(private productService: ProductService) {}
+  constructor(private productService: ProductService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -33,26 +34,14 @@ export class ProductController {
     return this.productService.getAllProducts();
   }
 
-  @Get('/page')
-  // @UseGuards(JwtAuthGuard)
-  async getAllProductsWithPagination(
-    @Query('page') page: string,
-    @Query('per_page') perPage: string,
-  ) {
-    return this.productService.getAllProductsWithPagination(
-      parseInt(page),
-      parseInt(perPage),
-    );
-  }
-
-  @Get('/:id')
+  @Get('/{id}')
   @HttpCode(HttpStatus.OK)
   // @UseGuards(JwtAuthGuard)
   async getProductById(@Param('id') id: string) {
     return this.productService.getProductById(parseInt(id));
   }
 
-  @Patch('/:id')
+  @Patch('/{id}')
   @HttpCode(HttpStatus.OK)
   // @UseGuards(JwtAuthGuard)
   async updateProductById(
@@ -65,10 +54,30 @@ export class ProductController {
     );
   }
 
-  @Delete('/:id')
+  @Delete('/{id}')
   @HttpCode(HttpStatus.OK)
   // @UseGuards(JwtAuthGuard)
   async deleteProductById(@Param('id') id: string) {
     return await this.productService.deleteProductById(parseInt(id));
+  }
+
+  @Get('/page')
+  async getAllProductsWithFilterAndPagination(
+    @Query('page') page: string,
+    @Query('per_page') perPage: string,
+    @Query('low') low: string,
+    @Query('high') high: string,
+    @Query('brand_name') brandName: string,
+  ) {
+    return await this.productService.getAllProductsWithFilterAndPagination(parseInt(page), parseInt(perPage), parseInt(low), parseInt(high), brandName)
+  }
+
+  @Get('/search')
+  async getAllProductsWithKeyword(
+    @Query('page') page: string,
+    @Query('per_page') perPage: string,
+    @Query('keyword') keyword: string,
+  ) {  
+    return await this.productService.getAllProductsWithKeyword(parseInt(page), parseInt(perPage), keyword)
   }
 }
