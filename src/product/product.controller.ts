@@ -17,7 +17,7 @@ import { HttpStatus } from '@nestjs/common';
 
 @Controller('product')
 export class ProductController {
-  constructor(private productService: ProductService) { }
+  constructor(private productService: ProductService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -68,7 +68,13 @@ export class ProductController {
     @Query('high') high: string,
     @Query('brand_name') brandName: string,
   ) {
-    return await this.productService.getAllProductsWithFilterAndPagination(parseInt(page), parseInt(perPage), parseInt(low), parseInt(high), brandName)
+    return await this.productService.getAllProductsWithFilterAndPagination(
+      parseInt(page),
+      parseInt(perPage),
+      parseInt(low),
+      parseInt(high),
+      brandName,
+    );
   }
 
   @Get('/search')
@@ -76,7 +82,11 @@ export class ProductController {
     @Query('page') page: string,
     @Query('per_page') perPage: string,
     @Query('keyword') keyword: string,
-  ) {  
-    return await this.productService.getAllProductsWithKeyword(parseInt(page), parseInt(perPage), keyword)
+  ) {
+    return await this.productService.getAllProductsWithKeyword(
+      parseInt(page),
+      parseInt(perPage),
+      keyword,
+    );
   }
 }
