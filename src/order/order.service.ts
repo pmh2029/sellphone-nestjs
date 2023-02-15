@@ -51,6 +51,14 @@ export class OrderService {
         HttpStatus.BAD_REQUEST,
       );
     }
+
+    if (product.in_stock === 0) {
+      throw new HttpException(
+        { error_message: 'Product not in stock' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const order = await this.prisma.orders.create({
       data: {
         phone_number: body.phone_number,
@@ -61,11 +69,32 @@ export class OrderService {
         total: product.price,
       },
     });
+    if (!order) {
+      throw new HttpException(
+        { error_message: 'Order not created' },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    await this.prisma.products.update({
+      where: {
+        id: body.product_id,
+      },
+      data: {
+        in_stock: product.in_stock - 1,
+      },
+    });
 
     return order;
   }
 
   async deleteOrder(id: number) {
+    const order = await this.prisma.orders.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
     await this.prisma.orders
       .delete({
         where: {
@@ -75,6 +104,19 @@ export class OrderService {
       .catch((err) => {
         throw new HttpException({ message: err }, HttpStatus.BAD_REQUEST);
       });
+
+    const product = await this.prisma.products.findUnique({
+      where: {
+        id: order.product_id,
+      },
+    });
+
+    await this.prisma.products.update({
+      where: { id: product.id },
+      data: {
+        in_stock: product.in_stock + 1,
+      },
+    });
 
     return { message: 'Delete order success' };
   }
