@@ -4,7 +4,7 @@ import { CreateOrderDto, UpdateOrderDto } from './order.dto';
 
 @Injectable()
 export class OrderService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async getAllOrders() {
     const orders = await this.prisma.orders.findMany({
@@ -121,7 +121,7 @@ export class OrderService {
           address: true,
           order_time: true,
           total: true,
-        }
+        },
       })
       .catch((err) => {
         throw new HttpException({ message: err }, HttpStatus.BAD_REQUEST);
