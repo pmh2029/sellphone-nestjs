@@ -46,8 +46,9 @@ model orders {
   user_id      Int
   phone_number String
   address      String
-  order_time   DateTime
+  order_time   DateTime  @default(now())
   total        Float
+  status       Int       @default(0)
   product      products? @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   product_id   Int       @unique
 }

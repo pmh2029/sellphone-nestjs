@@ -1,13 +1,23 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateOrderDto } from './order.dto';
+import { CreateOrderDto, UpdateOrderDto } from './order.dto';
 
 @Injectable()
 export class OrderService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async getAllOrders() {
     const orders = await this.prisma.orders.findMany({
+      select: {
+        id: true,
+        user: true,
+        product: true,
+        phone_number: true,
+        status: true,
+        address: true,
+        order_time: true,
+        total: true,
+      },
       orderBy: {
         id: 'asc',
       },
@@ -18,6 +28,16 @@ export class OrderService {
 
   async getOrderById(id: number) {
     const order = await this.prisma.orders.findUnique({
+      select: {
+        id: true,
+        user: true,
+        product: true,
+        phone_number: true,
+        status: true,
+        address: true,
+        order_time: true,
+        total: true,
+      },
       where: {
         id: id,
       },
@@ -64,7 +84,6 @@ export class OrderService {
         phone_number: body.phone_number,
         address: body.address,
         user_id: body.user_id,
-        order_time: body.order_time,
         product_id: body.product_id,
         total: product.price,
       },
@@ -86,6 +105,27 @@ export class OrderService {
     });
 
     return order;
+  }
+
+  async updateOrder(id: number, updateOrderDto: UpdateOrderDto) {
+    return await this.prisma.orders
+      .update({
+        where: { id: id },
+        data: { ...updateOrderDto },
+        select: {
+          id: true,
+          user: true,
+          product: true,
+          phone_number: true,
+          status: true,
+          address: true,
+          order_time: true,
+          total: true,
+        }
+      })
+      .catch((err) => {
+        throw new HttpException({ message: err }, HttpStatus.BAD_REQUEST);
+      });
   }
 
   async deleteOrder(id: number) {

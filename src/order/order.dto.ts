@@ -1,4 +1,10 @@
-import { IsNumber, IsString, IsNotEmpty, IsDate } from 'class-validator';
+import { IsNumber, IsString, IsNotEmpty } from 'class-validator';
+
+export class UpdateOrderDto {
+  @IsNotEmpty()
+  @IsNumber()
+  status: number;
+}
 
 export class CreateOrderDto {
   @IsNotEmpty()
@@ -16,8 +22,4 @@ export class CreateOrderDto {
   @IsNotEmpty()
   @IsString()
   address: string;
-
-  @IsNotEmpty()
-  @IsDate()
-  order_time: Date;
 }

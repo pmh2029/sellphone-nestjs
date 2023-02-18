@@ -4,7 +4,7 @@ import { UpdateProductDto, CreateProductDto } from './product.dto';
 
 @Injectable()
 export class ProductService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async createProduct(createProductDto: CreateProductDto) {
     const existBrand = await this.prisma.brands.findUnique({
@@ -164,6 +164,14 @@ export class ProductService {
     perPage: number,
     keyword: string,
   ) {
+    const total = await this.prisma.products.count({
+      where: {
+        product_name: {
+          contains: keyword ? keyword : '',
+          mode: 'insensitive',
+        },
+      },
+    })
     const products = await this.prisma.products.findMany({
       select: {
         id: true,
@@ -186,6 +194,7 @@ export class ProductService {
 
     return {
       products: products,
+      total: total,
     };
   }
 

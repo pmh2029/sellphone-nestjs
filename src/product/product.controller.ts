@@ -35,12 +35,12 @@ export class ProductController {
 
   @Get('/{id}')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   async getProductById(@Param('id') id: string) {
     return this.productService.getProductById(parseInt(id));
   }
 
-  @Patch('/{id}')
+  @Patch('/:id')
   @HttpCode(HttpStatus.OK)
   //@UseGuards(JwtAuthGuard)
   async updateProductById(
@@ -53,7 +53,7 @@ export class ProductController {
     );
   }
 
-  @Delete('/{id}')
+  @Delete('/:id')
   @HttpCode(HttpStatus.OK)
   //@UseGuards(JwtAuthGuard)
   async deleteProductById(@Param('id') id: string) {

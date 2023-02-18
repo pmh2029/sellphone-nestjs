@@ -30,6 +30,20 @@ CREATE TABLE "products" (
     CONSTRAINT "products_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "orders" (
+    "id" SERIAL NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "phone_number" TEXT NOT NULL,
+    "address" TEXT NOT NULL,
+    "order_time" TIMESTAMP(3) NOT NULL,
+    "total" DOUBLE PRECISION NOT NULL,
+    "status" INTEGER NOT NULL,
+    "product_id" INTEGER NOT NULL,
+
+    CONSTRAINT "orders_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
 
@@ -42,5 +56,14 @@ CREATE UNIQUE INDEX "brands_brand_name_key" ON "brands"("brand_name");
 -- CreateIndex
 CREATE UNIQUE INDEX "products_brand_id_product_name_key" ON "products"("brand_id", "product_name");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "orders_product_id_key" ON "orders"("product_id");
+
 -- AddForeignKey
 ALTER TABLE "products" ADD CONSTRAINT "products_brand_id_fkey" FOREIGN KEY ("brand_id") REFERENCES "brands"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "orders" ADD CONSTRAINT "orders_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "orders" ADD CONSTRAINT "orders_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
