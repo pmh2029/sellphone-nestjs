@@ -72,6 +72,23 @@ export class ProductService {
     };
   }
 
+  async getProductByName(product_name: string) {
+    return await this.prisma.products.findFirst({
+      select: {
+        id: true,
+        product_name: true,
+        brand: true,
+        price: true,
+        in_stock: true,
+        description: true,
+        url: true,
+      },
+      where: {
+        product_name: product_name,
+      }
+    })
+  }
+
   async getAllProductsWithFilterAndPagination(
     page: number,
     perPage: number,

@@ -40,6 +40,12 @@ export class ProductController {
     return this.productService.getProductById(parseInt(id));
   }
 
+  @Get('/name/:product_name')
+  @HttpCode(HttpStatus.OK)
+  async getProductByName(@Param('product_name') product_name: string) {
+    return this.productService.getProductByName(product_name);
+  }
+
   @Patch('/:id')
   @HttpCode(HttpStatus.OK)
   //@UseGuards(JwtAuthGuard)

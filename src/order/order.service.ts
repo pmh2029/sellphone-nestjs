@@ -19,7 +19,7 @@ export class OrderService {
         total: true,
       },
       orderBy: {
-        id: 'asc',
+        id: 'desc',
       },
     });
 
@@ -48,11 +48,21 @@ export class OrderService {
 
   async getOrdersByUserID(user_id: number) {
     const orders = await this.prisma.orders.findMany({
+      select: {
+        id: true,
+        user: true,
+        product: true,
+        phone_number: true,
+        status: true,
+        address: true,
+        order_time: true,
+        total: true,
+      },
       where: {
         user_id: user_id,
       },
       orderBy: {
-        order_time: 'asc',
+        order_time: 'desc',
       },
     });
 
@@ -80,6 +90,16 @@ export class OrderService {
     }
 
     const order = await this.prisma.orders.create({
+      select: {
+        id: true,
+        user: true,
+        product: true,
+        phone_number: true,
+        status: true,
+        address: true,
+        order_time: true,
+        total: true,
+      },
       data: {
         phone_number: body.phone_number,
         address: body.address,

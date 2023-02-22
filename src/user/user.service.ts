@@ -5,7 +5,7 @@ import { users } from '@prisma/client';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async findUserByUsername(username: string) {
     return await this.prisma.users.findUnique({
@@ -34,6 +34,16 @@ export class UserService {
   }
 
   async getAllUsers() {
-    return await this.prisma.users.findMany({where: {is_admin: false}})
+    return await this.prisma.users.findMany({ where: { is_admin: false } })
+  }
+
+  async deleteUserById(id: number) {
+    await this.prisma.users
+      .delete({ where: { id: id, } })
+      .catch((err) => {
+        throw new HttpException({ message: err }, HttpStatus.BAD_REQUEST);
+      });
+
+    return { message: 'Delete user success' };
   }
 }
